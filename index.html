@@ -1,81 +1,17 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="UTF-8"/>
     <script src="reactjs/react-with-addons.js"></script>
     <script src="reactjs/JSXTransformer.js"></script>
-	<script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
-  </head>
-  <body>
-    <div id="container"></div>
-    <script type="text/jsx">
-      //自定义插件
-      var lifeCycleMixin = {
-          componentWillUnmount:function(){}
-      }
-      // 模板名称必须大写，render里return的必须是一个闭合元素
-      var MessageBox = React.createClass({
-          //引用插件
-          mixins:[React.addons.LinkedStateMixin,lifeCycleMixin],
-          getInitialState:function(){
-              return {initNum:0,color:"red"}
-          },
-          count:function(e){
-              this.setState({initNum:this.state.initNum + 1});
-              console.log(this.refs.nameInput.getDOMNode().value);
-              // 清除
-             //  React.unmountComponentAtNode($("#container")[0]);
-          },
-          render:function(){
-              var style = {color:this.state.color};
-              //模板作为一个对象，在模板里用{}引用变量
-              var subs = [<SubMessage/>,<div style={style}>{this.state.initNum}</div>];
-              //onClick不能写在自定义标签中
-              //用ref定位节点，用defaultValue填默认值，valueLink 绑定state
-              return  ( <div>
-                    {subs}<h1 onClick={this.count}>你好。</h1>
-                    <SubMessage color={this.state.color} value={this.linkState('initNum')} />
-                    <input ref="nameInput" defaultValue="11" valueLink={this.linkState('initNum')} />
-                    </div> )
-          },
-          //生命周期
-          componentWillMount:function(){},
-          // 决定要不要更新
-          shouldComponentUpdate: function(nextProps, nextState) {
-              return this.state.initNum < 5;
-          },
-          componentWillUpdate:function(){},
-          componentWillUnmount:function(){}
-      });
-      var SubMessage = React.createClass({
-          // 设置默认的参数,checkedLink 反向绑定
-          getDefaultProps:function(){
-              return {color:"red",size:30}
-          },
-          render:function(){
-              //props从父标签传来的参数
-              var style = {color: this.props.color,"fontSize":this.props.size}
-              return  (
-                  <div>
-                  <h2 style={style}>{this.props.value}世界。</h2>
-                  <input checkedLink={this.props.value} />
-                  </div>
-                  )
-          },
-          //声明周期
-          componentWillReceiveProps: function(nextProps) {
-          }
-      });
-      // 只能render 一个闭合元素，返回一个render对象
-      var reactRender = React.render(
-      <MessageBox/>,
-        $('#container')[0],
-        function(){console.log("渲染完成")}
-      );
-      //reader对象有其所render模板的state
-      console.log(reactRender.state);
-      //setState的时候，会重新render
-      reactRender.setState({color:"blue"});
-    </script>
-  </body>
+    <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+</head>
+<body>
+<div id="render"></div>
+<div id="greet"></div>
+<div id="input"></div>
+<div id="lifeCycle"></div>
+<!--JSX 语法-->
+<script type="text/jsx" src="js/main.jsx"></script>
+</body>
 </html>
