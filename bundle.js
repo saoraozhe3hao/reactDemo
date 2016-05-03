@@ -1,3 +1,31 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/********************** 组件生命周期 *********************************/
+// 定义 CommonJS 模块
+module.exports = React.createClass({displayName: "exports",
+    componentWillMount: function () {
+        // 组件插入真实DOM 前调用
+    },
+    componentDidMount: function () {
+        // 组件插入真实DOM 后调用
+    },
+    componentWillUpdate(nextProps, nextState){
+        // 组件重新渲染 前调用
+    },
+    componentDidUpdate(prevProps, prevState){
+        // 组件重新渲染 后调用
+    },
+    componentWillUnmount: function () {
+        // 组件移除真实DOM 前调用
+    },
+    render: function () {
+        return (
+            React.createElement("div", null, 
+                "Hello ", this.props.name
+            )
+        );
+    }
+});
+},{}],2:[function(require,module,exports){
 /********************** 渲染 *********************************/
 var names = ['Jack', 'Tom', 'Alice'];
 // React.render的第一个参数是JSX 和 组件的render方法里return JSX
@@ -92,3 +120,4 @@ React.render(
     React.createElement(Lifecycle, {name: "lifeCycle"}),
     $('#lifeCycle').get(0)
 );
+},{"./browserify":1}]},{},[2]);

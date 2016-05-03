@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8"/>
     <script src="reactjs/react-with-addons.js"></script>
-    <script src="reactjs/JSXTransformer.js"></script>
     <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
 </head>
 <body>
@@ -11,7 +10,9 @@
 <div id="greet"></div>
 <div id="input"></div>
 <div id="lifeCycle"></div>
-<!--JSX 语法-->
-<script type="text/jsx" src="js/main.jsx"></script>
+<!-- 如果是浏览器端 jsx 转 js，则用以下两行 -->
+<!--<script src="reactjs/JSXTransformer.js"></script>-->
+<!--<script type="text/jsx" src="js/main.js"></script>-->
+<script src="bundle.js"></script>
 </body>
 </html>

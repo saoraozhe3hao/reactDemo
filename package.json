@@ -1,0 +1,14 @@
+{
+  "name": "reactDemo",
+  "description": "reactDemo.",
+  "version": "1.0.0",
+  "author": "Hong",
+  "license": "MIT",
+  "scripts": {
+    "jsx": "jsx jsx/ js/",
+    "browserify":"browserify js/main.js > bundle.js"
+  },
+  "devDependencies": {
+
+  }
+}
