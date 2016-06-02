@@ -69,6 +69,12 @@ var Input = React.createClass({
             enable: !this.state.enable,
             name:this.refs.nameInput.getDOMNode().value //通过 ref 获得指定元素，通过 getDOMNode() 获取真实DOM
         });
+        this.props.callback('成功');
+    },
+    change:function(content){
+        this.setState({
+            name:content
+        });
     },
     // 值绑定 只能绑定在 state 上
     render: function () {
@@ -80,8 +86,31 @@ var Input = React.createClass({
         );
     }
 });
+var SuperInput = React.createClass({
+    render: function () {
+        return (
+            <p>
+                <button onClick={this.handleClick}>改变子组件状态,回调{this.state.cbValue}</button>
+                <Input ref="input" callback={this.cb}/>  {/* 组件嵌套，将方法传递给子组件，让其回调 */}
+            </p>
+        );
+    },
+    getInitialState: function () {
+        return {
+
+        };
+    },
+    handleClick: function (event) {
+        this.refs.input.change('变了');   {/* 改变子组件状态 */}
+    },
+    cb: function(cbValue){
+        this.setState({
+            cbValue:cbValue
+        });
+    }
+});
 React.render(
-    <Input/>,
+    <SuperInput/>,
     $('#input').get(0)
 );
 /********************** 组件生命周期 *********************************/
