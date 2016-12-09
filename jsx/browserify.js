@@ -8,7 +8,7 @@ module.exports = React.createClass({
         // 组件插入真实DOM 后调用
     },
     componentWillUpdate(nextProps, nextState){
-        // 组件重新渲染 前调用
+        // 组件重新渲染 前调用, 传入的props变化时，会重新渲染
     },
     componentDidUpdate(prevProps, prevState){
         // 组件重新渲染 后调用

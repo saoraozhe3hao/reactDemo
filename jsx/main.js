@@ -24,14 +24,14 @@ var Greet = React.createClass({
                 <h1 className='greet' style={{color:'red'}}>
                     {/* 组件中用 this.props获取参数 */}
                     Hello {this.props.name}
-                    <li>
+                    <ul>
                         {
                             // 组件中用 this.props.children 获取子元素
                             this.props.children.map(function (child) {
                                 return <li>{child}</li>;
                             })
                         }
-                    </li>
+                    </ul>
                 </h1>
             )
         },
