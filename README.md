@@ -1,4 +1,4 @@
-CommonJS 模块  +  browserify + react
+react + CommonJS 模块  +  browserify
 ########
 1、安装 模块打包 命令行工具
    npm install -g browserify
