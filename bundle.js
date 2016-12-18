@@ -9,7 +9,7 @@ module.exports = React.createClass({displayName: "exports",
         // 组件插入真实DOM 后调用
     },
     componentWillUpdate(nextProps, nextState){
-        // 组件重新渲染 前调用
+        // 组件重新渲染 前调用, 传入的props变化时，会重新渲染
     },
     componentDidUpdate(prevProps, prevState){
         // 组件重新渲染 后调用
@@ -30,11 +30,11 @@ module.exports = React.createClass({displayName: "exports",
 var names = ['Jack', 'Tom', 'Alice'];
 // React.render的第一个参数是JSX 和 组件的render方法里return JSX
 // JSX里可以包含组件标签，JSX只能有一个顶级元素
-React.render(
+ReactDOM.render(
     React.createElement("div", null, 
         
-            names.map(function (name) {
-                return React.createElement("div", null, "Hello,", name, "!")
+            names.map(function (name,index) {
+                return React.createElement("div", {key: index}, "Hello,", name, "!")
             })
         
     )
@@ -52,11 +52,11 @@ var Greet = React.createClass({displayName: "Greet",
                 React.createElement("h1", {className: "greet", style: {color:'red'}}, 
                     /* 组件中用 this.props获取参数 */
                     "Hello ", this.props.name, 
-                    React.createElement("li", null, 
+                    React.createElement("ul", null, 
                         
                             // 组件中用 this.props.children 获取子元素
-                            this.props.children.map(function (child) {
-                                return React.createElement("li", null, child);
+                            this.props.children.map(function (child,index) {
+                                return React.createElement("li", {key: index}, child);
                             })
                         
                     )
@@ -72,11 +72,18 @@ var Greet = React.createClass({displayName: "Greet",
     }
 );
 
+// 无状态组件,即没有state
+function Button(prop){
+    return (
+        React.createElement("button", null, prop.text)
+    )
+}
 // 使用组件，传入参数和子元素
-React.render(
+ReactDOM.render(
     React.createElement(Greet, {name: "jack"}, 
         React.createElement("span", null, "hello"), 
-        React.createElement("span", null, "world")
+        React.createElement("span", null, "world"), 
+        React.createElement(Button, {text: "按钮"})
     ),
     $('#greet').get(0)
 );
@@ -92,10 +99,11 @@ var Input = React.createClass({displayName: "Input",
     },
     // 更新 state
     handleClick: function (event) {
-        console.log();
+        event.preventDefault();
+        console.log(event);
         this.setState({
             enable: !this.state.enable,
-            name:this.refs.nameInput.getDOMNode().value //通过 ref 获得指定元素，通过 getDOMNode() 获取真实DOM
+            name: ReactDOM.findDOMNode(this.refs.nameInput).value //通过 ref 获得指定组件或元素，通过 getDOMNode() 获取真实DOM
         });
         this.props.callback('成功');
     },
@@ -107,7 +115,7 @@ var Input = React.createClass({displayName: "Input",
     // 值绑定 只能绑定在 state 上
     render: function () {
         return (
-            React.createElement("p", null, 
+            React.createElement("span", null, 
                 React.createElement("input", {type: "text", disabled: this.state.enable, ref: "nameInput"}), 
                 React.createElement("button", {onClick: this.handleClick}, "变成", this.state.name)
             )
@@ -118,8 +126,9 @@ var SuperInput = React.createClass({displayName: "SuperInput",
     render: function () {
         return (
             React.createElement("p", null, 
-                React.createElement("button", {onClick: this.handleClick}, "改变子组件状态,回调", this.state.cbValue), 
-                React.createElement(Input, {ref: "input", callback: this.cb}), "  "/* 组件嵌套 */
+                /* 给事件处理函数传递参数 */
+                React.createElement("button", {onClick: this.handleClick.bind(this,'变了')}, "改变子组件状态,回调", this.state.cbValue), 
+                React.createElement(Input, {ref: "input", callback: this.cb}), "  "/* 组件嵌套，将方法传递给子组件，让其回调 */
             )
         );
     },
@@ -128,8 +137,8 @@ var SuperInput = React.createClass({displayName: "SuperInput",
 
         };
     },
-    handleClick: function (event) {
-        this.refs.input.change('变了');   {/* 改变子组件状态 */}
+    handleClick: function (attr) {
+        this.refs.input.change(attr);   {/* 改变子组件状态 */}
     },
     cb: function(cbValue){
         this.setState({
@@ -137,7 +146,7 @@ var SuperInput = React.createClass({displayName: "SuperInput",
         });
     }
 });
-React.render(
+ReactDOM.render(
     React.createElement(SuperInput, null),
     $('#input').get(0)
 );
@@ -145,7 +154,7 @@ React.render(
 // 引用CommonJS模块，用 browserify 打包
 var Lifecycle = require("./browserify");
 
-React.render(
+ReactDOM.render(
     React.createElement(Lifecycle, {name: "lifeCycle"}),
     $('#lifeCycle').get(0)
 );

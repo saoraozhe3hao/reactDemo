@@ -2,11 +2,11 @@
 var names = ['Jack', 'Tom', 'Alice'];
 // React.render的第一个参数是JSX 和 组件的render方法里return JSX
 // JSX里可以包含组件标签，JSX只能有一个顶级元素
-React.render(
+ReactDOM.render(
     <div>
         {
-            names.map(function (name) {
-                return <div>Hello,{name}!</div>
+            names.map(function (name,index) {
+                return <div key={index}>Hello,{name}!</div>
             })
         }
     </div>
@@ -27,8 +27,8 @@ var Greet = React.createClass({
                     <ul>
                         {
                             // 组件中用 this.props.children 获取子元素
-                            this.props.children.map(function (child) {
-                                return <li>{child}</li>;
+                            this.props.children.map(function (child,index) {
+                                return <li key={index}>{child}</li>;
                             })
                         }
                     </ul>
@@ -44,11 +44,18 @@ var Greet = React.createClass({
     }
 );
 
+// 无状态组件,即没有state
+function Button(prop){
+    return (
+        <button>{prop.text}</button>
+    )
+}
 // 使用组件，传入参数和子元素
-React.render(
+ReactDOM.render(
     <Greet name='jack'>
         <span>hello</span>
         <span>world</span>
+        <Button text="按钮"></Button>
     </Greet>,
     $('#greet').get(0)
 );
@@ -64,10 +71,10 @@ var Input = React.createClass({
     },
     // 更新 state
     handleClick: function (event) {
-        console.log();
+        event.preventDefault(); // 阻止冒泡
         this.setState({
             enable: !this.state.enable,
-            name:this.refs.nameInput.getDOMNode().value //通过 ref 获得指定元素，通过 getDOMNode() 获取真实DOM
+            name: ReactDOM.findDOMNode(this.refs.nameInput).value //通过 ref 获得指定组件或元素，通过 getDOMNode() 获取真实DOM
         });
         this.props.callback('成功');
     },
@@ -79,10 +86,10 @@ var Input = React.createClass({
     // 值绑定 只能绑定在 state 上
     render: function () {
         return (
-            <p>
+            <span>
                 <input type='text' disabled={this.state.enable} ref='nameInput'/>
                 <button onClick={this.handleClick}>变成{this.state.name}</button>
-            </p>
+            </span>
         );
     }
 });
@@ -90,7 +97,8 @@ var SuperInput = React.createClass({
     render: function () {
         return (
             <p>
-                <button onClick={this.handleClick}>改变子组件状态,回调{this.state.cbValue}</button>
+                {/* 给事件处理函数传递参数 */}
+                <button onClick={this.handleClick.bind(this,'变了')}>改变子组件状态,回调{this.state.cbValue}</button>
                 <Input ref="input" callback={this.cb}/>  {/* 组件嵌套，将方法传递给子组件，让其回调 */}
             </p>
         );
@@ -100,8 +108,8 @@ var SuperInput = React.createClass({
 
         };
     },
-    handleClick: function (event) {
-        this.refs.input.change('变了');   {/* 改变子组件状态 */}
+    handleClick: function (attr) {
+        this.refs.input.change(attr);   {/* 改变子组件状态 */}
     },
     cb: function(cbValue){
         this.setState({
@@ -109,7 +117,7 @@ var SuperInput = React.createClass({
         });
     }
 });
-React.render(
+ReactDOM.render(
     <SuperInput/>,
     $('#input').get(0)
 );
@@ -117,7 +125,7 @@ React.render(
 // 引用CommonJS模块，用 browserify 打包
 var Lifecycle = require("./browserify");
 
-React.render(
+ReactDOM.render(
     <Lifecycle name="lifeCycle"/>,
     $('#lifeCycle').get(0)
 );
