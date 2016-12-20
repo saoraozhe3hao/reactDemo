@@ -5,7 +5,7 @@ var names = ['Jack', 'Tom', 'Alice'];
 ReactDOM.render(
     <div>
         {
-            names.map(function (name,index) {
+            names.map(function (name, index) {
                 return <div key={index}>Hello,{name}!</div>
             })
         }
@@ -26,8 +26,8 @@ var Greet = React.createClass({
                     Hello {this.props.name}
                     <ul>
                         {
-                            // 组件中用 this.props.children 获取子元素
-                            this.props.children.map(function (child,index) {
+                            // 组件中用 this.props.children 获取子元素，也可以用 React.Children.map、forEach、toArray、count 来处理 children
+                            this.props.children.map(function (child, index) {
                                 return <li key={index}>{child}</li>;
                             })
                         }
@@ -45,7 +45,8 @@ var Greet = React.createClass({
 );
 
 // 无状态组件,即没有state
-function Button(prop){
+function Button(prop) {
+    // 以下jsx会被编译成 React.createElement(button,[props],[...children])
     return (
         <button>{prop.text}</button>
     )
@@ -66,7 +67,7 @@ var Input = React.createClass({
     getInitialState: function () {
         return {
             enable: false,
-            name:'按钮'
+            name: '按钮'
         };
     },
     // 更新 state
@@ -74,22 +75,31 @@ var Input = React.createClass({
         event.preventDefault(); // 阻止冒泡
         this.setState({
             enable: !this.state.enable,
-            name: ReactDOM.findDOMNode(this.refs.nameInput).value //通过 ref 获得指定组件或元素，通过 getDOMNode() 获取真实DOM
+            name: ReactDOM.findDOMNode(this.refs.nameInput).value //通过 ref 获得指定组件或元素，通过 findDOMNode() 获取真实DOM
         });
         this.props.callback('成功');
     },
-    change:function(content){
+    change: function (content) {
         this.setState({
-            name:content
+            name: content
         });
     },
     // 值绑定 只能绑定在 state 上
     render: function () {
-        return (
+        var ele = (
             <span>
                 <input type='text' disabled={this.state.enable} ref='nameInput'/>
                 <button onClick={this.handleClick}>变成{this.state.name}</button>
             </span>
+        );
+        // 克隆 react element，React.cloneElement(element, [props],[...children])用于给 react element 添加 props 和 替换 children
+        return React.cloneElement(
+            ele,
+            {
+                ref: 'span0',
+                className: 'clone',
+                title: this.state.name
+            }
         );
     }
 });
@@ -99,25 +109,25 @@ var SuperInput = React.createClass({
             <p>
                 {/* 给事件处理函数传递参数 */}
                 <button onClick={this.handleClick.bind(this,'变了')}>改变子组件状态,回调{this.state.cbValue}</button>
-                <Input ref="input" callback={this.cb}/>  {/* 组件嵌套，将方法传递给子组件，让其回调 */}
+                <Input ref="input" callback={this.cb}/> {/* 组件嵌套，将方法传递给子组件，让其回调 */}
             </p>
         );
     },
     getInitialState: function () {
-        return {
-
-        };
+        return {};
     },
     handleClick: function (attr) {
-        this.refs.input.change(attr);   {/* 改变子组件状态 */}
+        this.refs.input.change(attr);
+        {/* 改变子组件状态 */
+        }
     },
-    cb: function(cbValue){
+    cb: function (cbValue) {
         this.setState({
-            cbValue:cbValue
+            cbValue: cbValue
         });
     }
 });
-ReactDOM.render(
+ReactDOM.render(              //ReactDOM.render 挂载， ReactDOM.unmountComponentAtNode(container) 卸载
     <SuperInput/>,
     $('#input').get(0)
 );

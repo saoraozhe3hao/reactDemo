@@ -74,6 +74,7 @@ var Greet = React.createClass({displayName: "Greet",
 
 // 无状态组件,即没有state
 function Button(prop){
+    // 以下jsx会被编译成 React.createElement(button,[props],[...children])
     return (
         React.createElement("button", null, prop.text)
     )
@@ -99,11 +100,10 @@ var Input = React.createClass({displayName: "Input",
     },
     // 更新 state
     handleClick: function (event) {
-        event.preventDefault();
-        console.log(event);
+        event.preventDefault(); // 阻止冒泡
         this.setState({
             enable: !this.state.enable,
-            name: ReactDOM.findDOMNode(this.refs.nameInput).value //通过 ref 获得指定组件或元素，通过 getDOMNode() 获取真实DOM
+            name: ReactDOM.findDOMNode(this.refs.nameInput).value //通过 ref 获得指定组件或元素，通过 findDOMNode() 获取真实DOM
         });
         this.props.callback('成功');
     },
@@ -114,11 +114,20 @@ var Input = React.createClass({displayName: "Input",
     },
     // 值绑定 只能绑定在 state 上
     render: function () {
-        return (
+        var ele = (
             React.createElement("span", null, 
                 React.createElement("input", {type: "text", disabled: this.state.enable, ref: "nameInput"}), 
                 React.createElement("button", {onClick: this.handleClick}, "变成", this.state.name)
             )
+        );
+        // 克隆 react element，React.cloneElement(element, [props],[...children])用于给 react element 添加 props 和 替换 children
+        return React.cloneElement(
+            ele,
+            {
+                ref:'span0',
+                className: 'clone',
+                title: this.state.name
+            }
         );
     }
 });
@@ -146,7 +155,7 @@ var SuperInput = React.createClass({displayName: "SuperInput",
         });
     }
 });
-ReactDOM.render(
+ReactDOM.render(              //ReactDOM.render 挂载， ReactDOM.unmountComponentAtNode(container) 卸载
     React.createElement(SuperInput, null),
     $('#input').get(0)
 );
